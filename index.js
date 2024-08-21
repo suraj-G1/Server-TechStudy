@@ -3,7 +3,7 @@ const app = express();
 
 const userRoutes = require("./routes/User");
 const profileRoutes = require("./routes/Profile");
-const paymentRoutes = require("./routes/Payments");
+const paymentRoutes = require("./routes/Payment");
 const courseRoutes = require("./routes/Course");
 
 const database = require("./config/database");
@@ -17,7 +17,7 @@ dotenv.config();
 const PORT = process.env.PORT || 4000;
 
 //database connect
-database.connectDB();
+database.connect();
 //middlewares
 app.use(express.json());
 app.use(cookieParser());
