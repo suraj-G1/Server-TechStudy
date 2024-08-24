@@ -1,4 +1,4 @@
-const cloudinary = require('cloudinary');
+const cloudinary = require('cloudinary').v2;
 
 exports.uploadImageToCloudinary = async(file,folder,height,quality)=>{
     let options = {folder};
@@ -9,6 +9,6 @@ exports.uploadImageToCloudinary = async(file,folder,height,quality)=>{
         options.quality = quality;
     }
     options.resource_type = 'auto';
-
+    console.log('I am here to upload the image');
     return await cloudinary.uploader.upload(file.tempFilePath,options);
 }

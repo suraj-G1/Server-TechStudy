@@ -4,7 +4,9 @@ const User = require('../models/User');
 
 exports.auth = async (req,res,next)=>{
     try{
+        console.log('I am here to authenticate the user')
         //extract token
+
         const token = req.cookies.token || req.body.token || req.header('Authorization').replace("Bearer ","");
         if(!token){
             return res.status(401).json({
@@ -17,7 +19,7 @@ exports.auth = async (req,res,next)=>{
         //verify the token
         try{
             const decode = await jwt.verify(token,process.env.JWT_SECRET);
-            console.log(decode);
+            console.log("Decode",decode);
             req.user = decode;
         }catch(error){
             return res.status(401).json({
@@ -58,13 +60,17 @@ exports.isStudent = (req,res,next)=>{
 //isInstructor 
 exports.isInstructor = (req,res,next)=>{
     try{
+
+        console.log('I am here to check whether the user is Instructor');
         if(req.user.accountType !== 'Instructor'){
             return res.status(401).json({
                 success:false,
                 message:'This is protected route for Instructor'
             })
-            next();
+
         }
+        next();
+        console.log('yes user is Instructor');
     }catch(error){
         console.log(error);
         return res.status(500).json({

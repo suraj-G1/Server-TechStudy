@@ -71,16 +71,21 @@ exports.getAllUserDetails = async(req,res)=>{
         //fetch id 
         const id = req.user.id;
         //validate the id 
-        if(!id){
-            return res.json({
-                success:false,
-                message:'Id is not valid'
-            })
-        }
+        // if(!id){
+        //     return res.json({
+        //         success:false,
+        //         message:'Id is not valid'
+        //     })
+        // }
 
-        const userDetails = await User.findById(id).populate('addtionalDetails').exec();
+        const userDetails = await User.findById(id)
+        .populate('additionalDetails')
+        .exec();
 
+        console.log(userDetails);
         return res.status(200).json({
+  
+            userDetails,
             success:true,
             message:'All user extracted successfully',
         })

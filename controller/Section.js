@@ -6,6 +6,7 @@ exports.createSection = async (req,res)=>{
     try{
         //fetch the data 
         const {sectionName,courseId} = req.body;
+        console.log('I am here ',sectionName,courseId);
 
 
         //validate the data
@@ -15,19 +16,28 @@ exports.createSection = async (req,res)=>{
                 message:'All fileds are mandatory'
             })
         }
-
+        
+        console.log('I am creating Section');
         //create the section
         const newSection = await Section.create({sectionName});
 
+        console.log("Now I am updating in the Section in the course");
         // update the course 
         const updatedCourseDetails = await Course.findByIdAndUpdate(
             courseId,
             {
                 $push:{
                     courseContent:newSection._id,
-                }
+                },
             },
             {new:true})
+            .populate({
+                path:"courseContent",
+                populate:{
+                    path:"subSection"
+                },
+            })
+            .exec();
 
             //use populate to section and subsection
 

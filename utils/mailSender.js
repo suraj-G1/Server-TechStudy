@@ -11,7 +11,7 @@ const mailSender = async (email,title,body)=>{
             }
 
         })
-        let info = await transported.sendMail({
+        let info = await transporter.sendMail({
                from:"NextGenTech || Suraj Gund" ,
                to:`${email}`,
                subject:`${title}`,

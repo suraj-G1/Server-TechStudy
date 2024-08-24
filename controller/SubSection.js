@@ -1,7 +1,7 @@
 const SubSection = require('../models/SubSection');
 const Section = require('../models/Section');
 const { uploadImageToCloudinary } = require('../utils/imageUploader');
-
+require('dotenv').config();
 //create subsection
 
 exports.createSubSection = async (req,res)=>{
@@ -19,10 +19,11 @@ exports.createSubSection = async (req,res)=>{
                 message:'All fields are required'
             })
         }
+        console.log('I have validated everything');
 
         /// upload video to cloudinary
         const videoDetails = await uploadImageToCloudinary(video,process.env.FOLDER_NAME);
-
+        console.log('Video uploaded to cloudinary');
         //create a subseciton 
         const subSectionDetails = await SubSection.create({
             title:title,
@@ -50,7 +51,7 @@ exports.createSubSection = async (req,res)=>{
 
     }catch(error){
         return res.status(500).json({
-            success:true,
+            success:false,
             message:'Error while creating SubSection',
         })
 

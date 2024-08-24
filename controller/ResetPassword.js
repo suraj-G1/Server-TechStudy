@@ -4,8 +4,15 @@ const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 exports.resetPasswordToken = async (req,res)=>{
     try{
-        const {email} = req.body;
-        const user =await User.findOne({email});
+        const email = req.body.email;
+        if(!email){
+            return res.status(400).json({
+                success:false,
+                message:"Enter the email"
+            })
+        }
+        const user =await User.findOne({email: email});
+        console.log("User",user);
         if(!user){
             return res.status(400).json({
                 success:false,
@@ -14,14 +21,15 @@ exports.resetPasswordToken = async (req,res)=>{
         }
 
         //generate token
-        const token = crypto.randomUUID();
+        const token = await crypto.randomBytes(20).toString("hex");
 
         //update User by adding token and expiration time
-        const updateDetails =await User.findOneAndUpdate({email:email},{
+        const updatedDetails =await User.findOneAndUpdate({email:email},{
             token:token,
             resetPasswordExpires:Date.now() + 5*60*1000
         },{new:true})
 
+        console.log("Updated Details",updatedDetails);
         //create Url
         const url = `https://localhost:3000/update-password/${token}`
 
