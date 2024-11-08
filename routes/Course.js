@@ -1,68 +1,106 @@
 // Import the required modules
 const express = require("express")
 const router = express.Router()
-const {createCategory,showAllCategories} = require('../controller/Category');
-const {createCourse, getCourseDetails} = require('../controller/Course');
-const {auth,isInstructor,isAdmin,isStudent} = require('../middlewares/auth');
-const{createSection} = require('../controller/Section');
-const{createSubSection} = require('../controller/SubSection');
-// Import the required controllers and middleware functions
+
+// Import the Controllers
+
+// Course Controllers Import
 const {
-  login,
-  signup,
-  changePassword,
-  sendOTP,
-} = require("../controller/Auth");
+  createCourse,
+  getAllCourses,
+  getCourseDetails,
+  getFullCourseDetails,
+  editCourse,
+  getInstructorCourses,
+  deleteCourse,
+} = require("../controller/Course")
 
+
+// Categories Controllers Import
 const {
-  resetPasswordToken,
-  resetPassword,
-} = require("../controller/ResetPassword")
+  showAllCategories,
+  createCategory,
+  categoryPageDetails,
+} = require("../controller/Category")
 
-//const { auth } = require("../middlewares/auth")
+// Sections Controllers Import
+const {
+  createSection,
+  updateSection,
+  deleteSection,
+} = require("../controller/Section")
 
-// Routes for Login, Signup, and Authentication
+
+const{
+  updateCourseProgress,
+  updateCourseProgess
+} = require('../controller/CourseProgress');
+// Sub-Sections Controllers Import
+const {
+  createSubSection,
+  updateSubSection,
+  deleteSubSection,
+} = require("../controller/SubSection")
+
+// Rating Controllers Import
+const {
+  createRating,
+  getAverageRating,
+  getAllRating,
+} = require("../controller/RatingAndReview")
+
+// Importing Middlewares
+const { auth, isInstructor, isStudent, isAdmin } = require("../middlewares/auth")
 
 // ********************************************************************************************************
-//                                      Authentication routes
+//                                      Course routes
 // ********************************************************************************************************
 
-// Route for user login
-router.post("/login", login)
+// Courses can Only be Created by Instructors
+router.post("/createCourse", auth, isInstructor, createCourse)
+//Add a Section to a Course
+router.post("/addSection", auth, isInstructor, createSection)
+// Update a Section
+router.post("/updateSection", auth, isInstructor, updateSection)
+// Delete a Section
+router.post("/deleteSection", auth, isInstructor, deleteSection)
+// Edit Sub Section
+router.post("/updateSubSection", auth, isInstructor, updateSubSection)
+// Delete Sub Section
+router.post("/deleteSubSection", auth, isInstructor, deleteSubSection)
+// Add a Sub Section to a Section
+router.post("/addSubSection", auth, isInstructor, createSubSection)
+// Get all Registered Courses
+router.get("/getAllCourses", getAllCourses)
+// Get Details for a Specific Courses
+router.post("/getCourseDetails", getCourseDetails)
+// Get Details for a Specific Courses
+router.post("/getFullCourseDetails", auth, getFullCourseDetails)
+// Edit Course routes
+router.post("/editCourse", auth, isInstructor, editCourse)
+// Get all Courses Under a Specific Instructor
+router.get("/getInstructorCourses", auth, isInstructor, getInstructorCourses)
+// Delete a Course
+router.delete("/deleteCourse", deleteCourse)
 
-// Route for user signup
-router.post("/signup", signup)
 
-// Route for sending OTP to the user's email
-router.post("/sendotp", sendOTP)
-
-// Route for Changing the password
-router.post("/changepassword", auth, changePassword);
+// update the course progress
+router.post('/updateCourseProgress',auth,isStudent,updateCourseProgess);
 
 // ********************************************************************************************************
-//                                      Reset Password
+//                                      Category routes (Only by Admin)
 // ********************************************************************************************************
+// Category can Only be Created by Admin
+// TODO: Put IsAdmin Middleware here
+router.post("/createCategory", auth, isAdmin, createCategory)
+router.get("/showAllCategories", showAllCategories)
+router.post("/getCategoryPageDetails", categoryPageDetails)
 
-// Route for generating a reset password token
-router.post("/reset-password-token", resetPasswordToken)
+// ********************************************************************************************************
+//                                      Rating and Review
+// ********************************************************************************************************
+router.post("/createRating", auth, isStudent, createRating)
+router.get("/getAverageRating", getAverageRating)
+router.get("/getReviews", getAllRating)
 
-// Route for resetting user's password after verification
-router.post("/reset-password", resetPassword)
-
-router.post("/createCategory",createCategory);
-// Export the router for use in the main application
-
-router.get('/showAllCategories',showAllCategories);
-
-//create the course
-//router.post('/createCourse',auth,isInstructor,createCourse);
-router.post("/createCourse", auth, isInstructor, createCourse);
-
-//create section in the course
-router.post('/addSection',auth,isInstructor,createSection);
-
-router.get('/getCourseDetails',auth,isInstructor,getCourseDetails);
-
-//create SubSection
-router.post('/addSubSection',auth,isInstructor,createSubSection);
-module.exports = router;
+module.exports = router

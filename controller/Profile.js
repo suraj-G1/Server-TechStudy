@@ -1,3 +1,4 @@
+const Course = require('../models/Course');
 const Profile = require('../models/Profile');
 const User = require('../models/User');
 const {uploadImageToCloudinary} = require('../utils/imageUploader');
@@ -70,19 +71,13 @@ exports.getAllUserDetails = async(req,res)=>{
     try{
         //fetch id 
         const id = req.user.id;
-        //validate the id 
-        // if(!id){
-        //     return res.json({
-        //         success:false,
-        //         message:'Id is not valid'
-        //     })
-        // }
+       
 
         const userDetails = await User.findById(id)
         .populate('additionalDetails')
         .exec();
 
-        console.log(userDetails);
+        //console.log(userDetails);
         return res.status(200).json({
   
             userDetails,
@@ -107,7 +102,7 @@ exports.updateDisplayPicture = async (req, res) => {
         1000,
         1000
       )
-      console.log(image)
+      //console.log(image)
       const updatedProfile = await User.findByIdAndUpdate(
         { _id: userId },
         { image: image.secure_url },
@@ -150,4 +145,37 @@ exports.getEnrolledCourses = async (req, res) => {
         message: error.message,
       })
     }
+};
+
+exports.instructorDashboard = async(req,res)=>{
+  try{
+
+    const courseDetails = await Course.findById({instructor:req.user.id});
+
+    const courseData = courseDetails.map((course)=>{
+      const totalStudentsEnrolled = course.studentsEnrolled.length;
+      const totalAmountGenerated = totalStudentsEnrolled * course.price;
+      const courseDataWithStats = {
+        _id:course._id,
+        courseName:course.courseName,
+        courseDescription:course.courseDescription,
+        totalStudentsEnrolled,
+        totalAmountGenerated,
+      }
+      return courseDataWithStats
+    })
+
+    res.status(200).json({
+      courses:courseData
+    })
+    
+
+    
+  }catch(error){
+    console.log(error);
+    return res.status(500).json({
+      success:false,
+      message:"Internal Server Error"
+    })
+  }
 };

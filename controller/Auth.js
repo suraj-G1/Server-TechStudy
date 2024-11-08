@@ -31,7 +31,7 @@ exports.sendOTP = async (req,res)=>{
             upperCaseAlphabets:false,
             specialChars:false
         })
-        console.log("Generated OTP is",otp);
+        //console.log("Generated OTP is",otp);
 
         //check whether genearted otp is unique or not
         let result = await OTP.findOne({otp:otp});
@@ -48,7 +48,7 @@ exports.sendOTP = async (req,res)=>{
 
         //create entry of a otpPayload in Database
         const otpBody =await OTP.create(otpPayload);
-        console.log("OTP Body",otpBody);
+        //console.log("OTP Body",otpBody);
 
         //return a successful message
 
@@ -108,8 +108,8 @@ exports.signup = async (req,res)=>{
 
         //find most recent OTP
         const recentOTP = await OTP.find({email}).sort({createdAt:-1}).limit(1);
-        console.log("OTP",recentOTP);
-        console.log(email);
+        //console.log("OTP",recentOTP);
+        //console.log(email);
         //validate the OTP
         if(recentOTP.length === 0){
             return res.status(400).json({
@@ -141,7 +141,6 @@ exports.signup = async (req,res)=>{
             firstName,
             lastName,
             email,
-            contactNumber,
             accountType,
             additionalDetails:profileDetails._id,
             password:hashedPassword,

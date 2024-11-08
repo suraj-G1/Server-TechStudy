@@ -12,7 +12,7 @@ exports.resetPasswordToken = async (req,res)=>{
             })
         }
         const user =await User.findOne({email: email});
-        console.log("User",user);
+        //console.log("User",user);
         if(!user){
             return res.status(400).json({
                 success:false,
@@ -24,12 +24,12 @@ exports.resetPasswordToken = async (req,res)=>{
         const token = await crypto.randomBytes(20).toString("hex");
 
         //update User by adding token and expiration time
-        const updatedDetails =await User.findOneAndUpdate({email:email},{
-            token:token,
-            resetPasswordExpires:Date.now() + 5*60*1000
-        },{new:true})
+        const updatedDetails =await User.findOneAndUpdate(
+            {email:email},
+            {token:token,resetPasswordExpires:Date.now() + 5*60*1000},
+            {new:true})
 
-        console.log("Updated Details",updatedDetails);
+        //console.log("Updated Details",updatedDetails);
         //create Url
         const url = `https://localhost:3000/update-password/${token}`
 
