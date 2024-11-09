@@ -5,7 +5,6 @@ const CourseProgress = require('../models/CourseProgress');
 exports.updateCourseProgess=async(req,res)=>{
     const{courseId,subSectionId} = req.body;
     const userId = req.user.id;
-    //console.log("I am here to update the course mark as completed");
     try{
         const subSection = await SubSection.findById(subSectionId);
         console.log("subsection",subSection);
@@ -15,8 +14,7 @@ exports.updateCourseProgess=async(req,res)=>{
             })
         }
 
-        //console.log("Course Id",courseId);
-        //console.log("User Id",userId);
+        
         let courseProgress = await CourseProgress.findOne({
             courseID:courseId,
             userId:userId
@@ -40,7 +38,6 @@ exports.updateCourseProgess=async(req,res)=>{
 
         await courseProgress.save();
     }catch(error){
-        //console.log(error);
         return res.status(500).json({
             success:false,
             message:"Internal Server Error"
